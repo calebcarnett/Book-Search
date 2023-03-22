@@ -10,6 +10,9 @@ const SavedBooks = () => {
   const { loading, userData } = useQuery(GET_ME);
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
+  console.log("loading:", loading);
+  console.log("userData:", userData);
+
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -31,17 +34,20 @@ const SavedBooks = () => {
   if (loading) {
     return <h2>LOADING...</h2>;
   }
+  if (!userData) {
+    return <h2>No user data found.</h2>;
+  }
 
   return (
     <>
       <div fluid className="text-light bg-dark p-5">
         <Container>
-          <h1>Viewing {userData.username} saved books!</h1>
+          <h1>Viewing {userData?.username} saved books!</h1>
         </Container>
       </div>
       <Container>
         <h2 className="pt-5">
-          {userData.savedBooks?.length
+          {userData?.savedBooks?.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
               }:`
