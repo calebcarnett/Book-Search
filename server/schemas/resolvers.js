@@ -7,7 +7,6 @@ const { signToken } = require("../utils/auth");
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
-      console.log(context);
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select("-__v -password")
@@ -44,12 +43,11 @@ const resolvers = {
     },
     saveBook: async (parent, { bookData }, context) => {
       if (context.user) {
-        console.log(context.user);
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: bookData } },
+          { $pull: { savedBooks: bookData } },
           { new: true }
-        ).populate("savedBooks");
+        );
 
         return updatedUser;
       }
